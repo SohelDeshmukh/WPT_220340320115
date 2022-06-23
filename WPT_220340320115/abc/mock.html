@@ -1,0 +1,84 @@
+<html>
+  <body>
+    <form action="" method="get">
+      <br />Book Id<input id="bookid" type="text" style="margin-left: 3rem" />
+      <span id="msg">message</span>
+    </form>
+
+    <form action="" method="get">
+      <br />Book Name<input
+        id="bookname"
+        type="text"
+        style="margin-left: 22px"
+      />
+    </form>
+
+    <form action="" method="get">
+      <br />Price<input id="bookprice" type="text" style="margin-left: 4rem" />
+    </form>
+
+    <button id="addabook" style="margin-left: 11rem">Add a book</button>
+    <br />
+    <p><span id="allbooks">all books</span></p>
+  </body>
+
+  <script src="jquery-3.5.1.min.js"></script>
+  <script>
+    //our scrip will come here
+    $(() => {
+      $("#bookid").blur(() => {
+        let input = {
+          bookid: $("#bookid").val(),
+        };
+        let object = {
+          data: input,
+          url: "http://localhost:8081/fetchdetails",
+          type: "get",
+          datatype: "json",
+          success: (responsefromserver) => {
+            if (responsefromserver.status) {
+              $("#msg").html("Book Found..");
+              $("#bookname").val(responsefromserver.book.bookname);
+              $("#bookprice").val(responsefromserver.book.bookprice);
+              //   $("#allbooks").html(responsefromserver.allbooks);
+            } else {
+              $("#msg").html("Book Not Found..");
+              $("#bookid").val("");
+              $("#bookname").val("");
+              $("#bookprice").val("");
+            }
+          },
+          error: (responsefromserver) => {
+            console.log(responsefromserver);
+          },
+        };
+        $.ajax(object);
+      });
+
+      $("#addabook").click(() => {
+        let input = {
+          bookid: $("#bookid").val(),
+          bookname: $("#bookname").val(),
+          bookprice: $("#bookprice").val(),
+        };
+        let object = {
+          data: input,
+          url: "http://localhost:8081/addabook",
+          type: "get",
+          datatype: "json",
+          success: (responsefromserver) => {
+            if (responsefromserver) {
+              $("#msg").html("Added a book Succefully..");
+              $("#allbooks").html("Added a book Succefully..");
+            }
+          },
+          error: (responsefromserver) => {
+            console.log(responsefromserver);
+            $("#msg").html("Adding book Failed..");
+          },
+        };
+        $.ajax(object);
+      });
+    });
+  </script>
+</html>
